@@ -16,8 +16,9 @@ function ai() {
   return client;
 }
 
-/** Preferred model first; on failure (capacity/quota) fall through to backups. */
-const MODELS = ["gemini-3.8-flash", "gemini-3-flash", "gemini-2.0-flash"];
+/** Newest→oldest live flash models + the always-current alias; per-model 503 capacity blips fail over to the next. */
+const MODELS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-flash-latest"];
+const BACKOFFS = [0, 600, 1200, 1800];
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function generateWithFallback(
@@ -25,18 +26,17 @@ async function generateWithFallback(
 ): Promise<string | null> {
   const g = ai();
   if (!g) return null;
-  for (const model of MODELS) {
-    for (let attempt = 0; attempt < 2; attempt++) {
-      try {
-        const text = await Promise.race([
-          build(model),
-          new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 35_000)),
-        ]);
-        if (typeof text === "string" && text.trim().length > 0) return text;
-      } catch (e) {
-        console.error(`[gemini] ${model} attempt ${attempt + 1} failed:`, (e as Error).message);
-        await sleep(900);
-      }
+  for (let i = 0; i < MODELS.length; i++) {
+    const model = MODELS[i];
+    if (BACKOFFS[i]) await sleep(BACKOFFS[i]);
+    try {
+      const text = await Promise.race([
+        build(model),
+        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 12_000)),
+      ]);
+      if (typeof text === "string" && text.trim().length > 0) return text;
+    } catch (e) {
+      console.error(`[gemini] ${model} failed:`, (e as Error).message);
     }
   }
   return null;
