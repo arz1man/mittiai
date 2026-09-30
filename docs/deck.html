@@ -1,0 +1,212 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>MittiAI — Pitch Deck</title>
+<style>
+  :root{ --cream:#FBF6EC; --sand:#F3EADA; --ink:#2B2118; --soil:#6B5D4F; --leaf:#3E7C4F; --leafdeep:#2C5D3A; --saffron:#E8842C; --terra:#C4562F; --gold:#D9A441; }
+  *{ box-sizing:border-box; margin:0; }
+  @page{ size:1280px 720px; margin:0; }
+  body{ font-family:'Segoe UI',system-ui,sans-serif; background:var(--sand); color:var(--ink); }
+  .slide{ width:1280px; height:720px; page-break-after:always; position:relative; overflow:hidden; background:var(--cream); padding:70px 90px; display:flex; flex-direction:column; }
+  .slide.dark{ background:linear-gradient(135deg,#241C14,#2B2118); color:var(--sand); }
+  .kicker{ font-size:15px; font-weight:800; letter-spacing:.14em; text-transform:uppercase; color:var(--terra); margin-bottom:14px; }
+  h1{ font-size:64px; line-height:1.05; letter-spacing:-.02em; }
+  h2{ font-size:44px; line-height:1.1; letter-spacing:-.01em; margin-bottom:26px; }
+  .accent{ color:var(--saffron); }
+  .leafy{ color:var(--leafdeep); }
+  .dark .leafy{ color:var(--gold); }
+  p.lead{ font-size:22px; line-height:1.5; color:var(--soil); max-width:900px; }
+  .grid{ display:grid; gap:22px; }
+  .g2{ grid-template-columns:1fr 1fr; } .g3{ grid-template-columns:1fr 1fr 1fr; }
+  .card{ background:#fff; border:1px solid rgba(107,93,79,.18); border-radius:18px; padding:26px; }
+  .card h3{ font-size:21px; margin-bottom:8px; }
+  .card p{ font-size:16.5px; line-height:1.5; color:var(--soil); }
+  .bignum{ font-size:56px; font-weight:900; color:var(--terra); }
+  .stat{ text-align:left; }
+  .stat .lbl{ font-size:15px; font-weight:700; color:var(--ink); margin-top:2px; }
+  .stat .sub{ font-size:13px; color:var(--soil); }
+  .footer{ position:absolute; bottom:26px; left:90px; right:90px; display:flex; justify-content:space-between; font-size:12.5px; color:var(--soil); }
+  .tag{ display:inline-block; background:rgba(62,124,79,.12); color:var(--leafdeep); font-weight:700; border-radius:999px; padding:5px 14px; font-size:13.5px; margin-right:8px; }
+  .bar{ position:absolute; left:0; top:0; bottom:0; width:14px; background:linear-gradient(180deg,var(--saffron),var(--terra)); }
+  ul.big{ font-size:21px; line-height:1.75; color:var(--soil); padding-left:24px; max-width:980px; }
+  ul.big li{ margin-bottom:10px; }
+  ul.big b{ color:var(--ink); }
+  .flow{ display:flex; align-items:center; gap:14px; margin-top:30px; }
+  .step{ background:#fff; border:2px solid rgba(62,124,79,.35); border-radius:16px; padding:18px 20px; text-align:center; flex:1; }
+  .step .ic{ font-size:34px; } .step .t{ font-weight:800; font-size:17px; margin-top:6px; } .step .d{ font-size:13.5px; color:var(--soil); margin-top:4px; line-height:1.4; }
+  .arrow{ font-size:30px; color:var(--saffron); font-weight:900; }
+</style>
+</head>
+<body>
+
+<!-- 1 TITLE -->
+<div class="slide dark">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div style="font-size:70px;">🌾</div>
+    <h1 style="margin-top:18px;">Mitti<span class="accent">AI</span></h1>
+    <p style="font-size:30px; font-weight:700; margin-top:14px;">The agronomist in every farmer's pocket</p>
+    <p style="font-size:19px; color:var(--gold); margin-top:26px;">Google Cloud "Build with AI: Code for Communities" · Track 4 — AgriN &amp; Regenerative Agricultural Intelligence</p>
+    <div style="margin-top:34px;"><span class="tag" style="background:rgba(217,164,65,.15); color:var(--gold);">Gemini multimodal AI</span><span class="tag" style="background:rgba(217,164,65,.15); color:var(--gold);">Real Indian open data</span><span class="tag" style="background:rgba(217,164,65,.15); color:var(--gold);">6 languages · voice-first</span></div>
+  </div>
+  <div class="footer" style="color:rgba(243,234,218,.55);"><span>Team MittiAI · arz1man</span><span>github.com/arz1man/mittiai</span></div>
+</div>
+
+<!-- 2 PROBLEM -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">The problem</p>
+  <h2>100M+ smallholders fight crop disease <span class="accent">with guesswork</span></h2>
+  <div class="grid g3">
+    <div class="card stat"><div class="bignum">30–40%</div><div class="lbl">crop yield lost to pests &amp; disease</div><div class="sub">annual losses worth ₹1.4+ lakh crore</div></div>
+    <div class="card stat"><div class="bignum">1 : 1,000+</div><div class="lbl">agronomists vs. farmers</div><div class="sub">extension officers are unreachable at scale</div></div>
+    <div class="card stat"><div class="bignum">Days</div><div class="lbl">typical diagnosis lag</div><div class="sub">by the time disease is identified, it has spread</div></div>
+  </div>
+  <p class="lead" style="margin-top:30px;">Disease pressure is also a <b>national problem</b>: outbreaks cross district borders silently — no early-warning layer exists between the field and the agriculture department.</p>
+  <div class="footer"><span>MittiAI · Track 4</span><span>02</span></div>
+</div>
+
+<!-- 3 SOLUTION -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">The solution</p>
+  <h2>Photo in. <span class="leafy">Diagnosis, treatment &amp; a regenerative plan</span> out.</h2>
+  <div class="flow">
+    <div class="step"><div class="ic">📷</div><div class="t">Capture</div><div class="d">Any smartphone, any crop leaf — no login, works on 2G</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">🧠</div><div class="t">Gemini vision</div><div class="d">Disease ID + confidence + severity from the photo</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">💊</div><div class="t">Treat now</div><div class="d">Exact ICAR-dose advice, spoken aloud in 6 languages</div></div>
+    <div class="arrow">→</div>
+    <div class="step"><div class="ic">🌱</div><div class="t">Regenerate</div><div class="d">Cover crops, mulching, AWD — low-chemical season plan</div></div>
+    <div class="arrow">→</div>
+    <div class="step" style="border-color:rgba(196,86,47,.5);"><div class="ic">🗺️</div><div class="t">Warn the district</div><div class="d">Every diagnosis feeds a national outbreak map</div></div>
+  </div>
+  <p class="lead" style="margin-top:34px;">An <b>interoperable digital agriculture network</b> — exactly the Track-4 brief: localized advisories + disease diagnostics, built as a federated platform.</p>
+  <div class="footer"><span>MittiAI · Track 4</span><span>03</span></div>
+</div>
+
+<!-- 4 LIVE DEMO -->
+<div class="slide dark">
+  <p class="kicker" style="color:var(--gold);">Live demo</p>
+  <h2 style="color:var(--sand);">Four screens, one network</h2>
+  <div class="grid g2" style="flex:1;">
+    <div class="card" style="background:rgba(255,255,255,.06); border-color:rgba(217,164,65,.25);"><h3 style="color:var(--gold);">📷 /diagnose</h3><p style="color:rgba(243,234,218,.8);">Leaf photo → Late Blight · 93% confidence · HIGH severity · Mancozeb 2.5 g/L + regenerative alternatives · spoken readout</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06); border-color:rgba(217,164,65,.25);"><h3 style="color:var(--gold);">🌱 /advisory</h3><p style="color:rgba(243,234,218,.8);">Soil Health Card + 12-week NDVI sparkline + 14-day rain view → Gemini sowing window, cover crop &amp; 10-week calendar</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06); border-color:rgba(217,164,65,.25);"><h3 style="color:var(--gold);">💬 /chat — Sahayak</h3><p style="color:rgba(243,234,218,.8);">Voice-in, voice-out chat in हिंदी, मराठी, தமிழ், తెలుగు, বাংলা, English — grounded on the farmer's plot data</p></div>
+    <div class="card" style="background:rgba(255,255,255,.06); border-color:rgba(217,164,65,.25);"><h3 style="color:var(--gold);">🗺️ /dashboard</h3><p style="color:rgba(243,234,218,.8);">12-district outbreak map, early-warning queue, Gemini-drafted officer bulletins, Agmarknet price ticker</p></div>
+  </div>
+  <div class="footer" style="color:rgba(243,234,218,.55);"><span>MittiAI · Track 4</span><span>04</span></div>
+</div>
+
+<!-- 5 AI APPROACH -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">AI approach — Google AI integration</p>
+  <h2>Gemini does the heavy lifting <span class="accent">four ways</span></h2>
+  <div class="grid g2">
+    <div class="card"><h3>👁️ Multimodal vision diagnosis</h3><p>Gemini vision reads field photos (blurry, low-light tolerant) → structured JSON via <b>responseSchema</b>: disease, confidence, severity, treatment.</p></div>
+    <div class="card"><h3>📊 Data-fused advisory engine</h3><p>Soil nutrients + NDVI trend + 14-day forecast are composed into one prompt → structured regenerative calendar JSON.</p></div>
+    <div class="card"><h3>🗣️ Multilingual voice loop</h3><p>Web Speech STT → Gemini answers in the farmer's language → TTS readout. No literacy barrier.</p></div>
+    <div class="card"><h3>📣 Officer bulletin drafting</h3><p>Gemini composes district early-warning bulletins from live outbreak facts — SMS/IVR ready.</p></div>
+  </div>
+  <p class="lead" style="margin-top:26px;">Every call: timeout + <b>demo-mode fallback</b> — the product never hard-fails on stage.</p>
+  <div class="footer"><span>MittiAI · Track 4</span><span>05</span></div>
+</div>
+
+<!-- 6 DATA -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Real &amp; realistic open data</p>
+  <h2>Grounded in India's public data layer</h2>
+  <div class="grid g3">
+    <div class="card"><h3>🏥 Soil Health Card</h3><p>data.gov.in — N, P, K, OC, pH profiles drive soil-fix advice</p></div>
+    <div class="card"><h3>🛰️ ISRO Bhuvan / Sentinel-2</h3><p>12-week NDVI canopy trends per plot — stress detection</p></div>
+    <div class="card"><h3>🌧️ IMD district forecasts</h3><p>14-day rain/temp/humidity → irrigation &amp; spray windows</p></div>
+    <div class="card"><h3>💹 Agmarknet</h3><p>Mandi modal prices with 7-day change ticker</p></div>
+    <div class="card"><h3>🧪 ICAR / PlantVillage KBs</h3><p>Disease profiles, symptoms, ICAR-recommended doses</p></div>
+    <div class="card"><h3>📡 Surveillance patterns</h3><p>ICAR pest-surveillance-style district reports seed the live feed</p></div>
+  </div>
+  <p class="lead" style="margin-top:26px;"><b>Modular feed seam:</b> components never touch data directly — real APIs (IMD, Bhuvan, Earth Engine) plug in without UI changes.</p>
+  <div class="footer"><span>MittiAI · Track 4</span><span>06</span></div>
+</div>
+
+<!-- 7 NETWORK EFFECT -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">The flywheel</p>
+  <h2>Every diagnosis makes <span class="leafy">the whole network smarter</span></h2>
+  <div class="grid g3">
+    <div class="card"><div class="bignum" style="font-size:40px;">1. Farmer photographs</div><p>Diagnosis logged with district, crop, disease, timestamp.</p></div>
+    <div class="card"><div class="bignum" style="font-size:40px;">2. Map aggregates</div><p>District clusters surface rising outbreaks before they epidemic.</p></div>
+    <div class="card"><div class="bignum" style="font-size:40px;">3. Officer acts</div><p>Gemini-drafted bulletins dispatch targeted advisories — farmers get SMS/IVR in their language.</p></div>
+  </div>
+  <p class="lead" style="margin-top:30px;">This is the shift from <b>individual advice</b> to <b>population-level plant health intelligence</b> — the Digital Public Good angle.</p>
+  <div class="footer"><span>MittiAI · Track 4</span><span>07</span></div>
+</div>
+
+<!-- 8 BENEFICIARIES -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Beneficiaries</p>
+  <h2>Who wins, and how</h2>
+  <div class="grid g3">
+    <div class="card"><h3>👩‍🌾 Smallholder farmers</h3><p>30-sec diagnosis in their language → less crop loss, lower chemical spend, higher income. Voice-first = no literacy barrier.</p></div>
+    <div class="card"><h3>🏛️ Agriculture departments</h3><p>Real-time district outbreak visibility → targeted, cheaper interventions instead of blanket responses.</p></div>
+    <div class="card"><h3>🌍 Food system</h3><p>Early warning protects national yield — directly serves food-security mandates.</p></div>
+  </div>
+  <div class="footer"><span>MittiAI · Track 4</span><span>08</span></div>
+</div>
+
+<!-- 9 SCALABILITY -->
+<div class="slide dark">
+  <p class="kicker" style="color:var(--gold);">Scalability — built for India, ported for BRICS</p>
+  <h2 style="color:var(--sand);">A district row is all it takes</h2>
+  <ul class="big" style="color:rgba(243,234,218,.85);">
+    <li><b style="color:var(--gold);">Add a district = add a state.</b> Feed schemas are portable objects (lat/lon, crop, disease, severity).</li>
+    <li><b style="color:var(--gold);">BRICS swap-ins map 1:1</b> — Brazil INPE satellite feeds, South Africa weather data, Russia FCDC bulletin schemas plug into the same seam.</li>
+    <li><b style="color:var(--gold);">2G-tolerant, offline-friendly</b> — seeded feeds keep rural deployments alive when networks drop.</li>
+    <li><b style="color:var(--gold);">DPG path</b> — modular open-source architecture fits Digital Public Good certification.</li>
+  </ul>
+  <div class="footer" style="color:rgba(243,234,218,.55);"><span>MittiAI · Track 4</span><span>09</span></div>
+</div>
+
+<!-- 10 SUSTAINABILITY -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Sustainability</p>
+  <h2>Public infrastructure, <span class="accent">self-sustaining economics</span></h2>
+  <div class="grid g3">
+    <div class="card"><h3>🏛️ State DPI contracts</h3><p>License the advisory + early-warning layer to state agriculture departments.</p></div>
+    <div class="card"><h3>🤝 FPO partnerships</h3><p>Farmer-producer orgs bundle MittiAI advisory as a member service.</p></div>
+    <div class="card"><h3>📉 Insurance data</h3><p>Anonymized outbreak intelligence prices crop-insurance risk more fairly.</p></div>
+  </div>
+  <div class="footer"><span>MittiAI · Track 4</span><span>10</span></div>
+</div>
+
+<!-- 11 ROADMAP -->
+<div class="slide">
+  <div class="bar"></div>
+  <p class="kicker">Roadmap — next 90 days</p>
+  <h2>From prototype to <span class="leafy">state pilot</span></h2>
+  <div class="grid g3">
+    <div class="card"><h3>Now</h3><p>Gemini diagnosis, advisory, 6-language voice chat, outbreak dashboard, officer dispatch — live and deployed.</p></div>
+    <div class="card"><h3>+30 days</h3><p>Live IMD/Bhuvan API wiring, WhatsApp bot entry point, missed-call IVR diagnosis for feature phones.</p></div>
+    <div class="card"><h3>+90 days</h3><p>One-state pilot with an agriculture department; 10,000-farmer cohort; publish outbreak bulletin #1.</p></div>
+  </div>
+  <div class="footer"><span>MittiAI · Track 4</span><span>11</span></div>
+</div>
+
+<!-- 12 CLOSE -->
+<div class="slide dark">
+  <div style="flex:1; display:flex; flex-direction:column; justify-content:center;">
+    <div style="font-size:56px;">🌾</div>
+    <h1 style="margin-top:16px; font-size:54px;">From guesswork to precision — <span class="accent">in every farmer's language.</span></h1>
+    <p style="font-size:22px; margin-top:26px; color:rgba(243,234,218,.85);">Live demo · github.com/arz1man/mittiai · Built with the Gemini API</p>
+    <p style="font-size:17px; margin-top:30px; color:var(--gold); font-weight:700;">Team MittiAI · arz1man — Google Cloud "Build with AI: Code for Communities"</p>
+  </div>
+  <div class="footer" style="color:rgba(243,234,218,.55);"><span>धन्यवाद · நன்றி · ధన్యవాదాలు · ধন্যবাদ</span><span>12</span></div>
+</div>
+
+</body>
+</html>
