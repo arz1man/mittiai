@@ -1,0 +1,82 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+  --color-cream: #FBF6EC;
+  --color-sand: #F3EADA;
+  --color-parchment: #EDE0C8;
+  --color-ink: #2B2118;
+  --color-soil: #6B5D4F;
+  --color-leaf: #3E7C4F;
+  --color-leafdeep: #2C5D3A;
+  --color-saffron: #E8842C;
+  --color-terra: #C4562F;
+  --color-gold: #D9A441;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--color-cream);
+  color: var(--color-ink);
+  font-family: ui-sans-serif, system-ui, "Segoe UI", Roboto, "Noto Sans Devanagari", sans-serif;
+}
+
+.dark body {
+  background: #201A13;
+  color: #F3EADA;
+}
+
+/* glassmorphism accent card */
+.glass {
+  background: color-mix(in srgb, white 65%, transparent);
+  backdrop-filter: blur(14px);
+  border: 1px solid color-mix(in srgb, #6B5D4F 18%, transparent);
+  box-shadow: 0 8px 30px rgba(43, 33, 24, 0.08);
+}
+.dark .glass {
+  background: color-mix(in srgb, #2B2118 70%, transparent);
+  border-color: color-mix(in srgb, #D9A441 22%, transparent);
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.45);
+}
+
+.card {
+  border-radius: 1rem;
+  background: white;
+  border: 1px solid color-mix(in srgb, #6B5D4F 16%, transparent);
+  box-shadow: 0 2px 12px rgba(43, 33, 24, 0.06);
+}
+.dark .card {
+  background: #2B2118;
+  border-color: color-mix(in srgb, #D9A441 18%, transparent);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #E8842C, #C4562F);
+  color: #fff;
+  border-radius: 9999px;
+  font-weight: 600;
+  padding: 0.625rem 1.25rem;
+  transition: transform .15s ease, box-shadow .15s ease, filter .15s ease;
+  box-shadow: 0 4px 14px rgba(196, 86, 47, 0.35);
+}
+.btn-primary:hover { transform: translateY(-1px); filter: brightness(1.05); }
+.btn-primary:active { transform: translateY(0); }
+
+.pulse-dot {
+  animation: pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: .45; transform: scale(.82); }
+}
+
+.fade-in { animation: fadeIn .5s ease both; }
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: none; }
+}
+
+.spin-slow { animation: spin 1s linear infinite; }
+@keyframes spin { to { transform: rotate(360deg); } }
