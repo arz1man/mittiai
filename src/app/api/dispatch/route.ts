@@ -17,28 +17,31 @@ export async function POST(req: Request) {
 
     const key = process.env.GEMINI_API_KEY;
     if (key) {
-      try {
-        const g = new GoogleGenAI({ apiKey: key });
-        const res = await Promise.race([
-          g.models.generateContent({
-            model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
-            contents: [
-              {
-                role: "user",
-                parts: [
-                  {
-                    text: `Draft a concise early-warning bulletin (max 90 words) for district agriculture officers in India. Facts: ${facts}. Include: what to scout for, the single most important containment action this week, and one line to relay to farmers via SMS/IVR in simple language. Plain text only.`,
-                  },
-                ],
-              },
-            ],
-            config: { temperature: 0.4 },
-          }),
-          new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 25_000)),
-        ]);
-        return NextResponse.json({ message: res.text?.trim() ?? "", demo: false });
-      } catch (e) {
-        console.error("[api/dispatch] gemini failed", e);
+      const g = new GoogleGenAI({ apiKey: key });
+      const models = ["gemini-3.8-flash", "gemini-3-flash", "gemini-2.0-flash"];
+      for (const model of models) {
+        try {
+          const res = await Promise.race([
+            g.models.generateContent({
+              model,
+              contents: [
+                {
+                  role: "user",
+                  parts: [
+                    {
+                      text: `Draft a concise early-warning bulletin (max 90 words) for district agriculture officers in India. Facts: ${facts}. Include: what to scout for, the single most important containment action this week, and one line to relay to farmers via SMS/IVR in simple language. Plain text only.`,
+                    },
+                  ],
+                },
+              ],
+              config: { temperature: 0.4 },
+            }),
+            new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 25_000)),
+          ]);
+          if (res.text?.trim()) return NextResponse.json({ message: res.text.trim(), demo: false });
+        } catch (e) {
+          console.error(`[api/dispatch] ${model} failed`, e);
+        }
       }
     }
     return NextResponse.json({

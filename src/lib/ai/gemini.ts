@@ -16,6 +16,32 @@ function ai() {
   return client;
 }
 
+/** Preferred model first; on failure (capacity/quota) fall through to backups. */
+const MODELS = ["gemini-3.8-flash", "gemini-3-flash", "gemini-2.0-flash"];
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function generateWithFallback(
+  build: (model: string) => Promise<string>,
+): Promise<string | null> {
+  const g = ai();
+  if (!g) return null;
+  for (const model of MODELS) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        const text = await Promise.race([
+          build(model),
+          new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 35_000)),
+        ]);
+        if (typeof text === "string" && text.trim().length > 0) return text;
+      } catch (e) {
+        console.error(`[gemini] ${model} attempt ${attempt + 1} failed:`, (e as Error).message);
+        await sleep(900);
+      }
+    }
+  }
+  return null;
+}
+
 export const LANG_NAMES: Record<string, string> = {
   en: "English",
   hi: "Hindi (Devanagari script)",
@@ -79,27 +105,26 @@ export async function diagnoseImage(
 ): Promise<Diagnosis> {
   const g = ai();
   if (g) {
-    try {
-      const res = await Promise.race([
-        g.models.generateContent({
-          model: MODEL,
-          contents: [
-            {
-              role: "user",
-              parts: [
-                { inlineData: { mimeType: mime, data: imageBase64 } },
-                { text: `${DIAG_PROMPT}\n${langLine(lang)}` },
-              ],
-            },
-          ],
-          config: { responseMimeType: "application/json", responseSchema: DIAG_SCHEMA, temperature: 0.2 },
-        }),
-        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 30_000)),
-      ]);
-      const parsed = JSON.parse(res.text ?? "{}");
-      return { ...parsed, demo: false } as Diagnosis;
-    } catch (e) {
-      console.error("[gemini] diagnose failed, using demo fallback:", e);
+    const text = await generateWithFallback((model) =>
+      g.models.generateContent({
+        model,
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { inlineData: { mimeType: mime, data: imageBase64 } },
+              { text: `${DIAG_PROMPT}\n${langLine(lang)}` },
+            ],
+          },
+        ],
+        config: { responseMimeType: "application/json", responseSchema: DIAG_SCHEMA, temperature: 0.2 },
+      }).then((r) => r.text ?? ""),
+    );
+    if (text) {
+      try {
+        const parsed = JSON.parse(text);
+        if (parsed?.disease) return { ...parsed, demo: false } as Diagnosis;
+      } catch {}
     }
   }
   return demoDiagnosis(imageBase64, lang);
@@ -167,16 +192,15 @@ export async function advisoryForPlot(
 ): Promise<AdvisoryPlan> {
   const g = ai();
   if (g) {
-    try {
-      const res = await Promise.race([
-        g.models.generateContent({
-          model: MODEL,
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `You are an agroecology advisor for smallholder Indian farmers on a government platform.
+    const text = await generateWithFallback((model) =>
+      g.models.generateContent({
+        model,
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `You are an agroecology advisor for smallholder Indian farmers on a government platform.
 Using the REAL data below (Soil Health Card nutrients, 12-week satellite NDVI trend, 14-day IMD-style forecast), produce a regenerative farm plan.
 Soil Health Card data: ${JSON.stringify(ctx.soil)} (N,P,K in kg/ha, OC in %, pH; ideal: OC>0.5%, N>280, P>56, K>280; pH 6.5-7.5)
 Plot: ${ctx.plotName}, ${ctx.district}, ${ctx.state}; current crop ${ctx.crop}; ${ctx.areaAcres} acres.
@@ -184,18 +208,18 @@ NDVI weekly (Bhuvan/Sentinel-2): ${JSON.stringify(ctx.ndvi12w)} — comment on t
 14-day forecast: ${JSON.stringify(ctx.forecast)} — align irrigation and spray windows with rain days.
 Give practical, low-cost regenerative guidance (cover crops, mulching, AWD irrigation, bio-inputs, rotations). 4-6 calendar steps.
 ${langLine(lang)}`,
-                },
-              ],
-            },
-          ],
-          config: { responseMimeType: "application/json", responseSchema: ADV_SCHEMA, temperature: 0.4 },
-        }),
-        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 30_000)),
-      ]);
-      const parsed = JSON.parse(res.text ?? "{}");
-      return { ...parsed, demo: false } as AdvisoryPlan;
-    } catch (e) {
-      console.error("[gemini] advisory failed, using demo fallback:", e);
+              },
+            ],
+          },
+        ],
+        config: { responseMimeType: "application/json", responseSchema: ADV_SCHEMA, temperature: 0.4 },
+      }).then((r) => r.text ?? ""),
+    );
+    if (text) {
+      try {
+        const parsed = JSON.parse(text);
+        if (parsed?.sowingWindow) return { ...parsed, demo: false } as AdvisoryPlan;
+      } catch {}
     }
   }
   return demoAdvisory(ctx, lang);
@@ -247,28 +271,23 @@ export async function chatReply(
 ): Promise<{ text: string; demo?: boolean }> {
   const g = ai();
   if (g) {
-    try {
-      const res = await Promise.race([
-        g.models.generateContent({
-          model: MODEL,
-          contents: [
-            {
-              role: "user",
-              parts: [
-                {
-                  text: `You are MittiAI Sahayak, a warm, practical agriculture advisor for Indian smallholder farmers. Keep answers short (max 120 words), step-wise, low-cost, and regenerative-first. Context about the farmer's situation:\n${context}\n\n${langLine(lang)}\n\nConversation:\n${messages.map((m) => `${m.role === "user" ? "Farmer" : "You"}: ${m.text}`).join("\n")}\n\nAnswer the farmer's latest message.`,
-                },
-              ],
-            },
-          ],
-          config: { temperature: 0.6 },
-        }),
-        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 30_000)),
-      ]);
-      return { text: res.text ?? "", demo: false };
-    } catch (e) {
-      console.error("[gemini] chat failed:", e);
-    }
+    const text = await generateWithFallback((model) =>
+      g.models.generateContent({
+        model,
+        contents: [
+          {
+            role: "user",
+            parts: [
+              {
+                text: `You are MittiAI Sahayak, a warm, practical agriculture advisor for Indian smallholder farmers. Keep answers short (max 120 words), step-wise, low-cost, and regenerative-first. Context about the farmer's situation:\n${context}\n\n${langLine(lang)}\n\nConversation:\n${messages.map((m) => `${m.role === "user" ? "Farmer" : "You"}: ${m.text}`).join("\n")}\n\nAnswer the farmer's latest message.`,
+              },
+            ],
+          },
+        ],
+        config: { temperature: 0.6 },
+      }).then((r) => r.text ?? ""),
+    );
+    if (text) return { text, demo: false };
   }
   const last = messages[messages.length - 1]?.text ?? "";
   return {
