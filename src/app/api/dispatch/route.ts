@@ -21,7 +21,7 @@ export async function POST(req: Request) {
         const g = new GoogleGenAI({ apiKey: key });
         const res = await Promise.race([
           g.models.generateContent({
-            model: process.env.GEMINI_MODEL || "gemini-2.5-flash",
+            model: process.env.GEMINI_MODEL || "gemini-3.8-flash",
             contents: [
               {
                 role: "user",

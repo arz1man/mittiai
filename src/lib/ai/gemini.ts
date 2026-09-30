@@ -6,7 +6,7 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { DISEASES } from "../data/seeds";
 
-const MODEL = process.env.GEMINI_MODEL || "gemini-2.5-flash";
+const MODEL = process.env.GEMINI_MODEL || "gemini-3.8-flash";
 const KEY = process.env.GEMINI_API_KEY || "";
 
 let client: GoogleGenAI | null = null;
