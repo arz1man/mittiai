@@ -16,9 +16,9 @@ function ai() {
   return client;
 }
 
-/** Newest→oldest live flash models + the always-current alias; per-model 503 capacity blips fail over to the next. */
-const MODELS = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.5-flash", "gemini-flash-latest"];
-const BACKOFFS = [0, 600, 1200, 1800];
+/** Newest→oldest live flashes + lite variants (capacity headroom); 503s fail over down the chain. */
+const MODELS = ["gemini-3.8-flash", "gemini-flash-latest", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-2.5-flash-lite"];
+const BACKOFFS = [0, 500, 1000, 1500, 2000];
 const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
 
 async function generateWithFallback(
@@ -32,7 +32,7 @@ async function generateWithFallback(
     try {
       const text = await Promise.race([
         build(model),
-        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 12_000)),
+        new Promise<never>((_, rej) => setTimeout(() => rej(new Error("timeout")), 14_000)),
       ]);
       if (typeof text === "string" && text.trim().length > 0) return text;
     } catch (e) {
@@ -117,7 +117,7 @@ export async function diagnoseImage(
             ],
           },
         ],
-        config: { responseMimeType: "application/json", responseSchema: DIAG_SCHEMA, temperature: 0.2 },
+        config: { responseMimeType: "application/json", responseSchema: DIAG_SCHEMA, temperature: 0.2, thinkingConfig: { thinkingBudget: 0 } },
       }).then((r) => r.text ?? ""),
     );
     if (text) {
@@ -212,7 +212,7 @@ ${langLine(lang)}`,
             ],
           },
         ],
-        config: { responseMimeType: "application/json", responseSchema: ADV_SCHEMA, temperature: 0.4 },
+        config: { responseMimeType: "application/json", responseSchema: ADV_SCHEMA, temperature: 0.4, thinkingConfig: { thinkingBudget: 0 } },
       }).then((r) => r.text ?? ""),
     );
     if (text) {
@@ -284,7 +284,7 @@ export async function chatReply(
             ],
           },
         ],
-        config: { temperature: 0.6 },
+        config: { temperature: 0.6, thinkingConfig: { thinkingBudget: 0 } },
       }).then((r) => r.text ?? ""),
     );
     if (text) return { text, demo: false };
